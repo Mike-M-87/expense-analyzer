@@ -10,5 +10,4 @@ yarn dev
 pnpm dev
 # or
 bun dev
-```# expense-analyzer
-# expense-analyzer
+```
