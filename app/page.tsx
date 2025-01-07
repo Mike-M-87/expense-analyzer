@@ -175,7 +175,7 @@ const ExpenseChart = () => {
       <div className="flex flex-col gap-6 mb-6">
         <div className="">
           <div className='flex items-center gap-2 flex-wrap'>
-            <Image src="/tencents-nobg.png" alt="Ten Cents" width={30} height={30} />
+            <Image src="/tencents-nobg.png" alt="" width={40} height={40} />
             <h2 className='text-2xl text-white font-bold capitalize tracking-tight'>Ten Cents</h2>
           </div>
           <span className="block text-sm font-normal text-purple-400 mt-1">Analyze your financial {transactionType === 'expense' ? 'expenses' : transactionType === 'income' ? 'income' : 'flow'}</span>

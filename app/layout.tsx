@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Ten Cents",
   description: "Expense analyzer website",
   icons: {
-    icon: '/tencents.jpeg',
+    icon: '/tencents.png',
   },
   appleWebApp: {
     title: 'Ten Cents',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     startupImage:
     {
-      url: '/tencents.jpeg',
+      url: '/tencents.png',
       media: '(device-width: 768px) and (device-height: 1024px)',
     },
   },
@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="apple-touch-icon" href="/tencents.jpeg" />
+        <link rel="apple-touch-icon" href="/tencents.png" />
         <link rel="manifest" crossOrigin="use-credentials" href="/manifest.json" />
       </head>
       <body className="antialiased">
