@@ -182,24 +182,24 @@ const ExpenseChart = () => {
         </div>
 
         <div className="flex gap-4 flex-col flex-wrap xs:flex-row p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-          <div className='flex flex-col xs:flex-row gap-2 xs:items-center'>
-            <label className="text-sm text-purple-300">Range</label>
+          <div className='flex flex-col xs:flex-row gap-2 xs:items-center w-full xs:w-auto'>
+            <label className="text-sm text-purple-300">Date</label>
             <div className="flex items-center gap-2">
               <input
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
                 className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
-                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm"
+                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm w-full"
               />
-              -
+              <span className='text-purple-300 self-start'>_</span>
               <input
                 type="date"
                 min={dateRange.start}
                 value={dateRange.end}
                 onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
                 className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
-                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm"
+                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm w-full"
               />
             </div>
           </div>
@@ -410,7 +410,9 @@ const ExpenseChart = () => {
                   {isDragging ? 'Release to analyze' : 'Drag and drop or click to browse'}
                 </p>
               </label>
-              <a href="/expense-analyzer-template.csv" className='text-purple-400 hover:text-purple-300 transition-all text-center block mt-8'>Download sample csv here</a>
+              <a href="/expense-analyzer-template.csv" className='text-purple-400 hover:text-purple-300 transition-all underline text-center block mt-6'>
+                Download sample csv here
+              </a>
             </div>
           )}
       </div>
