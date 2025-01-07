@@ -140,7 +140,7 @@ const ExpenseChart = () => {
   };
 
   const toggleCategory = (data: Expense) => {
-    if (!data.isSubcategory && expenses.find(e => e.name === data.name)?.subCategories?.length) {
+    if (!data?.isSubcategory && expenses.find(e => e.name === data.name)?.subCategories?.length) {
       setExpandedCategories(prev =>
         prev.includes(data.name) ? prev.filter(name => name !== data.name) : [...prev, data.name]
       )
@@ -171,8 +171,8 @@ const ExpenseChart = () => {
 
 
   return (
-    <div className="p-2 sm:p-4 w-full min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900">
-      <div className="flex flex-col gap-6 mb-8">
+    <div className="p-2 xs:p-4 w-full min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900">
+      <div className="flex flex-col gap-6 mb-6">
         <div className="">
           <div className='flex items-center gap-2 flex-wrap'>
             <Image src="/tencents-nobg.png" alt="Ten Cents" width={30} height={30} />
@@ -181,50 +181,52 @@ const ExpenseChart = () => {
           <span className="block text-sm font-normal text-purple-400 mt-1">Analyze your financial {transactionType === 'expense' ? 'expenses' : transactionType === 'income' ? 'income' : 'flow'}</span>
         </div>
 
-        <div className="flex gap-4 flex-wrap p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-purple-300">From:</label>
-            <input
-              type="date"
-              value={dateRange.start}
-              onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-              className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
+        <div className="flex gap-4 flex-col flex-wrap xs:flex-row p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+          <div className='flex flex-col xs:flex-row gap-2 xs:items-center'>
+            <label className="text-sm text-purple-300">Range</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={dateRange.start}
+                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
                 cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm"
-            />
+              />
+              -
+              <input
+                type="date"
+                min={dateRange.start}
+                value={dateRange.end}
+                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
+                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm"
+              />
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-purple-300">To:</label>
-            <input
-              type="date"
-              min={dateRange.start}
-              value={dateRange.end}
-              onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+          <div className='flex gap-4'>
+            <select
+              value={transactionType}
+              onChange={(e) => setTransactionType(e.target.value as 'expense' | 'income' | 'all')}
               className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
-                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm"
-            />
-          </div>
+              cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm w-fit"
+            >
+              <option value="all">All Types</option>
+              <option value="expense">Expenses</option>
+              <option value="income">Income</option>
+            </select>
 
-          <select
-            value={transactionType}
-            onChange={(e) => setTransactionType(e.target.value as 'expense' | 'income' | 'all')}
-            className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
-              cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm"
-          >
-            <option value="all">All Types</option>
-            <option value="expense">Expenses</option>
-            <option value="income">Income</option>
-          </select>
-
-          <button
-            onClick={resetFilters}
-            className="px-6 py-2.5 text-sm text-white bg-white/10 hover:bg-white/20 
+            <button
+              onClick={resetFilters}
+              className="px-6 py-2.5 text-sm text-white bg-white/10 hover:bg-white/20 
               focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg transition-all
-              flex items-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill='white' viewBox="0 0 576 512"><path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7-36.7z" /></svg>
-            Reset
-          </button>
+              flex items-center gap-2 w-fit"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill='white' viewBox="0 0 576 512"><path d="M3.9 22.9C10.5 8.9 24.5 0 40 0L472 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L396.4 195.6C316.2 212.1 256 283 256 368c0 27.4 6.3 53.4 17.5 76.5c-1.6-.8-3.2-1.8-4.7-2.9l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 65.3C-.7 53.4-2.8 36.8 3.9 22.9zM432 224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm59.3 107.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L432 345.4l-36.7-36.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 368l-36.7 36.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L432 390.6l36.7-36.7z" /></svg>
+              Reset
+            </button>
+          </div>
+
           {fileAdded && <button
             onClick={() => {
               setFileAdded(null);
@@ -233,7 +235,7 @@ const ExpenseChart = () => {
             }}
             className="px-6 py-2.5 text-sm text-white bg-red-500/30 hover:bg-red-500/20 
               focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg transition-all
-              flex items-center gap-2"
+              flex items-center gap-2 w-fit"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" height="1em" fill='white'>
               <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
@@ -246,16 +248,18 @@ const ExpenseChart = () => {
       <div className="w-full">
         {expenses.length > 0 ? (
           <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4">
-            <div style={{ height: 100 + chartData.length * 50 }}>
+            <div style={{ height: 100 + chartData.length * 70 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
                   layout="vertical"
                   barSize={40}
                 >
-                  <CartesianGrid horizontal strokeDasharray="3 3" opacity={0.2} />
+                  <CartesianGrid horizontal strokeDasharray="3 3" opacity={0.1} />
                   <XAxis
                     type="number"
+                    padding={{ left: 5 }}
+                    opacity={0.5}
                     tickFormatter={(value) => `Kes ${value.toLocaleString()}`}
                     stroke="#9CA3AF"
                   />
@@ -295,7 +299,7 @@ const ExpenseChart = () => {
                       return (
                         <rect
                           x={x}
-                          y={y}
+                          y={y + 10}
                           width={width}
                           height={height}
                           fill={gradient}
@@ -312,13 +316,13 @@ const ExpenseChart = () => {
                       const hasSubcategories = (expenses.find(e => e.name === displayName)?.subCategories?.length ?? 0) > 0;
 
                       return (
-                        <g>
+                        <g onClick={() => hasSubcategories && toggleCategory({ name: displayName, amount: value as number, isSubcategory: isSubcategory })}>
                           {hasSubcategories && (
                             <svg
-                              x={x + 5}
-                              y={y + height / 2 - 8}
-                              width={16}
-                              height={16}
+                              x={x}
+                              y={y - 9}
+                              width={13}
+                              height={13}
                               viewBox="0 0 320 512"
                               fill="white"
                             >
@@ -330,9 +334,8 @@ const ExpenseChart = () => {
                             </svg>
                           )}
                           <text
-                            x={x + (hasSubcategories ? 24 : 8)}
-                            y={y + height / 2}
-                            dy={4}
+                            x={x + (hasSubcategories ? 16 : 0)}
+                            y={y + 2}
                             fill="white"
                             fontSize={12}
                             textAnchor="start"
@@ -340,10 +343,10 @@ const ExpenseChart = () => {
                             {displayName}
                           </text>
 
-                          {width > 200 && (
+                          {width > 100 && (
                             <text
                               x={x + width - 8}
-                              y={y + height / 2}
+                              y={y + height / 2 + 10}
                               dy={4}
                               fill="white"
                               fontSize={12}

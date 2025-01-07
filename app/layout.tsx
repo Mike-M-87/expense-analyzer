@@ -1,24 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from '@vercel/analytics/next';
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Ten Cents",
   description: "Expense analyzer website",
   icons: {
     icon: '/tencents.jpeg',
-  },  
+  },
   appleWebApp: {
     title: 'Ten Cents',
     capable: true,
@@ -49,9 +38,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/tencents.jpeg" />
         <link rel="manifest" crossOrigin="use-credentials" href="/manifest.json" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         {children}
         <Analytics />
       </body>
