@@ -69,16 +69,20 @@ const ExpenseChart = () => {
       setRawTransactions(transactions);
       processTransactions(transactions);
     };
+    reader.onerror = (err) => {
+      alert('Error reading file')
+    };
     reader.readAsText(fileAdded);
   }, [fileAdded]);
 
-  const processTransactions = (transactions: Transaction[]) => {
+  const processTransactions = useMemo(() => (transactions: Transaction[]) => {
     const filteredTransactions = transactions.filter(transaction => {
       // Filter by date range if set
       if (dateRange.start && dateRange.end) {
         const transDate = new Date(transaction.date);
         const startDate = new Date(dateRange.start);
         const endDate = new Date(dateRange.end);
+        if (isNaN(transDate.getTime()) || isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return false;
         if (transDate < startDate || transDate > endDate) return false;
       }
       // Filter by transaction type
@@ -91,8 +95,13 @@ const ExpenseChart = () => {
       if (existing) {
         existing.amount += transaction.amount;
         existing.subCategories = existing.subCategories || [];
-        if (transaction.note) {
-          const existingSub = existing.subCategories.find(s => s.name === transaction.note);
+        if (!existing.subCategories.length && transaction.note?.trim()) {
+          existing.subCategories.push(
+            { name: "Other", amount: existing.amount - transaction.amount },
+            { name: transaction.note, amount: transaction.amount }
+          );
+        } else if (transaction.note?.trim()) {
+          const existingSub = existing.subCategories?.find(s => s.name === transaction.note);
           if (existingSub) {
             existingSub.amount += transaction.amount;
           } else {
@@ -111,7 +120,7 @@ const ExpenseChart = () => {
           name: transaction.name,
           amount: transaction.amount
         };
-        if (transaction.note) {
+        if (transaction.note?.trim()) {
           newCategory.subCategories = [{ name: transaction.note, amount: transaction.amount }];
         }
         acc.push(newCategory);
@@ -126,7 +135,7 @@ const ExpenseChart = () => {
       }))
       .sort((a, b) => b.amount - a.amount);
     setExpenses(sortedData);
-  };
+  }, [dateRange, transactionType]);
 
   useEffect(() => {
     if (rawTransactions.length > 0) {
@@ -169,6 +178,12 @@ const ExpenseChart = () => {
     return result
   }, [expenses, expandedCategories])
 
+  const getChartHeight = () => {
+    const baseHeight = 100;
+    const rowHeight = 70;
+    const minHeight = 400;
+    return Math.max(baseHeight + chartData.length * rowHeight, minHeight);
+  };
 
   return (
     <div className="p-2 xs:p-4 w-full min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900">
@@ -248,7 +263,7 @@ const ExpenseChart = () => {
       <div className="w-full">
         {expenses.length > 0 ? (
           <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4">
-            <div style={{ height: 100 + chartData.length * 70 }}>
+            <div style={{ height: getChartHeight() }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
@@ -294,8 +309,6 @@ const ExpenseChart = () => {
                         : hasSubcategories
                           ? "#4F46E5"  // Category with subcategories (blue)
                           : "#818CF8";  // Regular category (lighter indigo)
-
-
                       return (
                         <rect
                           x={x}
