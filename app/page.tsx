@@ -92,37 +92,29 @@ const ExpenseChart = () => {
 
     const groupedData = filteredTransactions.reduce((acc, transaction) => {
       const existing = acc.find(e => e.name === transaction.name);
+      const transactionNote = transaction.note?.trim();
       if (existing) {
         existing.amount += transaction.amount;
         existing.subCategories = existing.subCategories || [];
-        if (!existing.subCategories.length && transaction.note?.trim()) {
+        const existingSubLen = existing.subCategories.length;
+        let checkNote = transactionNote;
+
+        if (transactionNote && !existingSubLen) {
           existing.subCategories.push(
             { name: "Other", amount: existing.amount - transaction.amount },
-            { name: transaction.note, amount: transaction.amount }
-          );
-        } else if (transaction.note?.trim()) {
-          const existingSub = existing.subCategories?.find(s => s.name === transaction.note);
-          if (existingSub) {
-            existingSub.amount += transaction.amount;
-          } else {
-            existing.subCategories.push({ name: transaction.note, amount: transaction.amount });
-          }
-        } else if (!transaction.note && existing.subCategories?.length > 0) {
-          const existingSub = existing.subCategories.find(s => s.name === "Other");
-          if (existingSub) {
-            existingSub.amount += transaction.amount;
-          } else {
-            existing.subCategories.push({ name: "Other", amount: transaction.amount });
-          }
-        }
+            { name: checkNote, amount: transaction.amount });
+          return acc;
+        } else if (!transactionNote && existingSubLen) checkNote = "Other";
+
+        const existingSub = existing.subCategories.find(s => s.name === checkNote);
+        if (existingSub) existingSub.amount += transaction.amount;
+        else checkNote && existing.subCategories.push({ name: checkNote, amount: transaction.amount });
       } else {
         const newCategory: GroupedExpense = {
           name: transaction.name,
           amount: transaction.amount
         };
-        if (transaction.note?.trim()) {
-          newCategory.subCategories = [{ name: transaction.note, amount: transaction.amount }];
-        }
+        if (transactionNote) newCategory.subCategories = [{ name: transactionNote, amount: transaction.amount }];
         acc.push(newCategory);
       }
       return acc;
@@ -138,9 +130,7 @@ const ExpenseChart = () => {
   }, [dateRange, transactionType]);
 
   useEffect(() => {
-    if (rawTransactions.length > 0) {
-      processTransactions(rawTransactions);
-    }
+    if (rawTransactions.length > 0) processTransactions(rawTransactions);
   }, [dateRange, transactionType]);
 
   const resetFilters = () => {
