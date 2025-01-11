@@ -108,7 +108,7 @@ const ExpenseChart = () => {
 
         const existingSub = existing.subCategories.find(s => s.name === checkNote);
         if (existingSub) existingSub.amount += transaction.amount;
-        else checkNote && existing.subCategories.push({ name: checkNote, amount: transaction.amount });
+        else if (checkNote) existing.subCategories.push({ name: checkNote, amount: transaction.amount });
       } else {
         const newCategory: GroupedExpense = {
           name: transaction.name,
