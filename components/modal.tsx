@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CloseIcon } from "./icons";
 import { CsvReader } from "@/app/reader";
 
@@ -11,6 +11,7 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
   const [savedTransactions, setSavedTransactions] = useState<Transaction[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [activeTab, setActiveTab] = useState<'saved' | 'add'>('saved');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -31,8 +32,12 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
     const parsedTransactions = JSON.parse(storedTransactions) as Transaction[];
     if (parsedTransactions.length === 0) setActiveTab('add');
     setSavedTransactions(parsedTransactions);
-    setFilteredTransactions(parsedTransactions);
   }, []);
+
+  useEffect(() => {
+    setFilteredTransactions(savedTransactions)
+    setSearchTerm('');
+  }, [savedTransactions]);
 
 
   function closeModal() {
@@ -64,10 +69,9 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
   return (
     <div
       onClick={(e) => { if (e.target === e.currentTarget) closeModal() }}
-      className='fixed inset-0 flex flex-col justify-center items-center z-50 backdrop-blur-sm 
-        bg-black/50'
+      className='fixed inset-0 top-0 left-0 flex flex-col sm:justify-center items-center z-50 backdrop-blur-md w-screen min-h-lvh'
     >
-      <div className={`relative min-h-[300px] xs:h-fit max-h-lvh my-5 overflow-auto bg-white/5 backdrop-blur-sm border border-white/10 
+      <div className={`relative min-h-[300px] xs:h-fit max-h-[85vh] my-5 overflow-auto bg-black/50 border border-white/10 
         max-w-2xl w-[95%] p-4 xs:p-6 rounded-xl ${isClosing ? "fade-out" : "fade-in"}`}
       >
         <button
@@ -249,17 +253,22 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
                 <input
                   type="text"
                   placeholder="Search"
+                  value={searchTerm}
                   onChange={(e) => {
                     const search = e.target.value.toLowerCase();
                     const filtered = savedTransactions.filter((txn: Transaction) => {
                       return txn.name.toLowerCase().includes(search) || txn.note?.toLowerCase().includes(search);
                     });
                     setFilteredTransactions(filtered);
+                    setSearchTerm(search);
                   }}
-                  className="bg-transparent outline-none"
+                  className="bg-transparent outline-none flex-grow"
                 />
                 <button
-                  onClick={() => setFilteredTransactions(savedTransactions)}
+                  onClick={() => {
+                    setFilteredTransactions(savedTransactions);
+                    setSearchTerm('');
+                  }}
                   className="ml-auto text-gray-400 hover:text-white transition-colors"
                 >
                   <CloseIcon />
