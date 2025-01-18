@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { CloseIcon } from "./icons";
+import { CloseIcon, GraphIcon, ImportCsvIcon, ImportFileIcon } from "./icons";
 import { CsvReader } from "@/app/reader";
 
 
@@ -103,8 +103,8 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
         </div>
 
         {activeTab == 'add' ?
-          <div className="flex flex-col gap-4">
-            <h2 className="text-lg text-center my-2 font-semibold">Add Expense Manually</h2>
+          <div className="flex flex-col gap-3">
+            <h2 className="text-lg my-1 font-semibold">Add Expense Manually</h2>
 
             <form onSubmit={handleSubmit}>
               <input type="hidden" name="recurring" value="true" />
@@ -171,15 +171,14 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
 
               <button
                 disabled={loading}
-                className='w-full mt-4 p-2.5 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition-all disabled:opacity-50'
+                className='w-full mt-4 p-2.5 bg-purple-700 hover:bg-purple-600 text-white rounded-xl transition-all disabled:opacity-50'
                 type="submit"
               >
                 Save
               </button>
             </form>
 
-            <p className="text-center text-gray-300 mt-2">To bulk save expenses,
-              choose one of the import options below. This will <span className="text-red-600 text-lg">overwrite</span> your saved expenses
+            <p className="text-center text-sm text-gray-300 my-2">Importing will <span className="text-red-600 text-lg">overwrite</span> your saved expenses
             </p>
 
 
@@ -191,9 +190,9 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
                     localStorage.setItem('expenses', JSON.stringify(currentExpenses));
                     setActiveTab('saved');
                   }}
-                  className="w-full p-2.5 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition-all flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="white" height="1em" viewBox="0 0 512 512"><path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" /></svg>
-                  Save Current Expenses from Graph
+                  className="w-full p-2.5 bg-purple-700 hover:bg-purple-600 text-white rounded-xl transition-all flex items-center justify-center gap-2">
+                  <ImportFileIcon />
+                  Import Expenses from Graph
                 </button>
                 <p className="text-center">or</p>
               </>
@@ -207,15 +206,7 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
                 className="hidden"
               />
 
-              <svg xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-purple-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
+              <ImportCsvIcon />
               <span className="text-purple-400">Import CSV</span>
             </label>
           </div> :
@@ -226,10 +217,8 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
                   onViewSaved(savedTransactions);
                   closeModal()
                 }}
-                className="w-full p-2.5 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition-all flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="1em" fill="white">
-                  <path d="M24 32c13.3 0 24 10.7 24 24l0 352c0 13.3 10.7 24 24 24l416 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L72 480c-39.8 0-72-32.2-72-72L0 56C0 42.7 10.7 32 24 32zM128 136c0-13.3 10.7-24 24-24l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24zm24 72l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm0 96l272 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-272 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
-                </svg>
+                className="w-full p-2.5 bg-purple-700 hover:bg-purple-600 text-white rounded-xl transition-all flex items-center justify-center gap-2">
+                <GraphIcon />
                 View on Graph
               </button>
               <button
@@ -264,7 +253,7 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
                   }}
                   className="bg-transparent outline-none flex-grow"
                 />
-                <button
+                {searchTerm && <button
                   onClick={() => {
                     setFilteredTransactions(savedTransactions);
                     setSearchTerm('');
@@ -272,13 +261,13 @@ export function EditorModal({ currentExpenses, onClose, onViewSaved }: { current
                   className="ml-auto text-gray-400 hover:text-white transition-colors"
                 >
                   <CloseIcon />
-                </button>
+                </button>}
               </div>
               <div className="max-h-[60vh] overflow-y-auto space-y-2">
                 {filteredTransactions.map((expense, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-white/5 rounded-2xl"
                   >
                     <div className="flex-1">
                       <p className="text-white">{expense.name}</p>

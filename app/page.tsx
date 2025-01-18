@@ -131,7 +131,7 @@ const ExpenseChart = () => {
 
   return (
     <section>
-      <div className="flex gap-4 flex-col flex-wrap xs:flex-row p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 my-6">
+      <div className="flex gap-4 flex-col flex-wrap xs:flex-row p-4 bg-white/5 rounded-xl border border-white/10 my-6">
         <div className='inline-flex flex-col xs:flex-row gap-2 xs:items-center w-full xs:w-auto'>
           <label className="text-sm text-purple-300">Date</label>
           <div className="inline-flex items-center gap-2">
@@ -140,7 +140,7 @@ const ExpenseChart = () => {
               value={dateRange.start}
               onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
               className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
-                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm w-full"
+                cursor-pointer hover:bg-white/20 rounded-xl transition-all text-sm w-full"
             />
             <span className='text-purple-300 self-start'>_</span>
             <input
@@ -149,7 +149,7 @@ const ExpenseChart = () => {
               value={dateRange.end}
               onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
               className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
-                cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm w-full"
+                cursor-pointer hover:bg-white/20 rounded-xl transition-all text-sm w-full"
             />
           </div>
         </div>
@@ -159,7 +159,7 @@ const ExpenseChart = () => {
             value={transactionType}
             onChange={(e) => setTransactionType(e.target.value as 'expense' | 'income' | 'all')}
             className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
-              cursor-pointer hover:bg-white/20 rounded-lg transition-all text-sm"
+              cursor-pointer hover:bg-white/20 rounded-xl transition-all text-sm"
           >
             <option value="all">All Types</option>
             <option value="expense">Expenses</option>
@@ -169,7 +169,7 @@ const ExpenseChart = () => {
           <button
             onClick={resetFilters}
             className="px-6 py-2.5 text-sm text-white bg-white/10 hover:bg-white/20 
-              focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg transition-all
+              focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-xl transition-all
               inline-flex items-center gap-2"
           >
             <ResetIcon />
@@ -195,7 +195,7 @@ const ExpenseChart = () => {
               setExpenses([]);
             }}
             className="px-6 py-2.5 text-sm text-white bg-red-500/30 hover:bg-red-500/20 
-              focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg transition-all
+              focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-xl transition-all
               inline-flex items-center gap-2 w-fit"
           >
             <TrashIcon />
@@ -206,7 +206,7 @@ const ExpenseChart = () => {
 
       <div className="w-full">
         {expenses.length > 0 ? (
-          <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4">
+          <div className="bg-white/5 rounded-xl border border-white/10 p-4">
             <div style={{ height: getChartHeight() }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart

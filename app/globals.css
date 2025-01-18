@@ -21,9 +21,13 @@ body {
 }
 
 .form-input {
-  @apply p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg transition-all w-full
+  @apply p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-xl transition-all w-full
 }
 
+*{
+  scrollbar-width:thin;
+  scrollbar-color: #4B5563 #1A202C;
+}
 
 .fade-in{
   animation: fade-in 0.25s cubic-bezier(0.15, 0.75, 0.5, 1) 0s;
