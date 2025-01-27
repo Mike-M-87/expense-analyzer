@@ -2,8 +2,7 @@
 
 import { BarsIcon, ResetIcon, TrashIcon } from '@/components/icons'
 import { EditorModal } from '@/components/modal'
-import Image from 'next/image'
-import { useState, useMemo, useEffect, use } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
 import { CsvReader } from './reader'
 
@@ -17,6 +16,8 @@ const ExpenseChart = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [fileAdded, setFileAdded] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(false)
+  const [totalIncome, setTotalIncome] = useState(0)
+  const [totalExpense, setTotalExpense] = useState(0)
 
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +34,18 @@ const ExpenseChart = () => {
   useEffect(() => {
     function processTransactions() {
       if (rawTransactions.length === 0) return;
+
+      let incomeTotal = 0;
+      let expenseTotal = 0;
+
       const filteredTransactions = rawTransactions.filter(transaction => {
+        // Calculate totals before filtering
+        if (transaction.type === 'income') {
+          incomeTotal += transaction.amount;
+        } else if (transaction.type === 'expense') {
+          expenseTotal += transaction.amount;
+        }
+
         // Filter by date range if set
         if (dateRange.start && dateRange.end) {
           const transDate = new Date(transaction.date);
@@ -84,6 +96,8 @@ const ExpenseChart = () => {
         }))
         .sort((a, b) => b.amount - a.amount);
       setExpenses(sortedData);
+      setTotalIncome(incomeTotal);
+      setTotalExpense(expenseTotal);
     }
     processTransactions();
   }, [dateRange, transactionType, rawTransactions]);
@@ -188,7 +202,7 @@ const ExpenseChart = () => {
             Manage
           </button>
 
-          {rawTransactions.length > 0 && <button
+          {fileAdded && <button
             onClick={() => {
               setFileAdded(null);
               setRawTransactions([]);
@@ -208,6 +222,12 @@ const ExpenseChart = () => {
         {expenses.length > 0 ? (
           <div className="bg-white/5 rounded-xl border border-white/10 p-4">
             <div style={{ height: getChartHeight() }}>
+              <p className="text-sm ml-2">
+                Total {transactionType === "expense"
+                  ? `Expenses: KES ${totalExpense.toLocaleString()}`
+                  : `Income: KES ${totalIncome.toLocaleString()}`
+                }
+              </p>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
