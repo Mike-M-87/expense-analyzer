@@ -155,7 +155,7 @@ const ExpenseChart = () => {
               className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
                 cursor-pointer hover:bg-white/20 rounded-xl transition-all text-sm w-full"
             />
-            <span className='text-purple-300 self-start'>_</span>
+            <span className='text-purple-300 self-start'>-</span>
             <input
               type="date"
               min={dateRange.start}
