@@ -39,13 +39,6 @@ const ExpenseChart = () => {
       let expenseTotal = 0;
 
       const filteredTransactions = rawTransactions.filter(transaction => {
-        // Calculate totals before filtering
-        if (transaction.type === 'income') {
-          incomeTotal += transaction.amount;
-        } else if (transaction.type === 'expense') {
-          expenseTotal += transaction.amount;
-        }
-
         // Filter by date range if set
         if (dateRange.start && dateRange.end) {
           const transDate = new Date(transaction.date);
@@ -56,6 +49,12 @@ const ExpenseChart = () => {
         }
         // Filter by transaction type
         if (transactionType !== 'all' && transaction.type !== transactionType) return false;
+         // Calculate totals after filtering
+        if (transaction.type === 'income') {
+          incomeTotal += transaction.amount;
+        } else if (transaction.type === 'expense') {
+          expenseTotal += transaction.amount;
+        }
         return true;
       });
 
@@ -156,7 +155,7 @@ const ExpenseChart = () => {
               className="p-2.5 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 
                 cursor-pointer hover:bg-white/20 rounded-xl transition-all text-sm w-full"
             />
-            <span className='text-purple-300 self-start'>_</span>
+            <span className='text-purple-300 self-start'>-</span>
             <input
               type="date"
               min={dateRange.start}
