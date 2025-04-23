@@ -1,6 +1,6 @@
 'use client'
 
-import { BarsIcon, ResetIcon, TrashIcon } from '@/components/icons'
+import { BarsIcon, CheckIcon, CopyIcon, ResetIcon, TrashIcon } from '@/components/icons'
 import { EditorModal } from '@/components/modal'
 import { useState, useMemo, useEffect } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
@@ -18,6 +18,15 @@ const ExpenseChart = () => {
   const [showModal, setShowModal] = useState(false)
   const [totalIncome, setTotalIncome] = useState(0)
   const [totalExpense, setTotalExpense] = useState(0)
+  const [balanceCopied, setBalanceCopied] = useState(false)
+
+  const handleCopyBalance = () => {
+    navigator.clipboard.writeText(`${totalIncome.toLocaleString()}-${totalExpense.toLocaleString()}`)
+    setBalanceCopied(true)
+    setTimeout(() => {
+      setBalanceCopied(false)
+    }, 2000)
+  }
 
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,9 +232,14 @@ const ExpenseChart = () => {
         {expenses.length > 0 ? (
           <div className="bg-white/5 rounded-xl border border-white/10 p-4">
             <div style={{ height: getChartHeight() }}>
-              <p className="text-sm ml-2">
-                Balance (KES): {totalIncome.toLocaleString()} - {totalExpense.toLocaleString()} = {(totalIncome - totalExpense).toLocaleString()}
-              </p>
+              <div className='flex items-center gap-2 ml-2 mb-2'>
+                <p className="text-sm">
+                  Balance: {totalIncome.toLocaleString()} - {totalExpense.toLocaleString()} = {(totalIncome - totalExpense).toLocaleString()}
+                </p>
+                <button onClick={handleCopyBalance}>
+                  {balanceCopied ? <CheckIcon /> : <CopyIcon />}
+                </button>
+              </div>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
