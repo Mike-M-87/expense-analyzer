@@ -40,6 +40,13 @@ const ExpenseChart = () => {
 
       const filteredTransactions = rawTransactions.filter(transaction => {
         // Filter by date range if set
+        // Calculate totals after filtering
+        if (transaction.type === 'income') {
+          incomeTotal += transaction.amount;
+        } else if (transaction.type === 'expense') {
+          expenseTotal += transaction.amount;
+        }
+
         if (dateRange.start && dateRange.end) {
           const transDate = new Date(transaction.date);
           const startDate = new Date(dateRange.start);
@@ -49,12 +56,7 @@ const ExpenseChart = () => {
         }
         // Filter by transaction type
         if (transactionType !== 'all' && transaction.type !== transactionType) return false;
-         // Calculate totals after filtering
-        if (transaction.type === 'income') {
-          incomeTotal += transaction.amount;
-        } else if (transaction.type === 'expense') {
-          expenseTotal += transaction.amount;
-        }
+
         return true;
       });
 
@@ -222,10 +224,7 @@ const ExpenseChart = () => {
           <div className="bg-white/5 rounded-xl border border-white/10 p-4">
             <div style={{ height: getChartHeight() }}>
               <p className="text-sm ml-2">
-                Total {transactionType === "expense"
-                  ? `Expenses: KES ${totalExpense.toLocaleString()}`
-                  : `Income: KES ${totalIncome.toLocaleString()}`
-                }
+                Balance (KES): {totalIncome.toLocaleString()} - {totalExpense.toLocaleString()} = {(totalIncome - totalExpense).toLocaleString()}
               </p>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
