@@ -15,6 +15,7 @@ const ExpenseChart = () => {
   const [rawTransactions, setRawTransactions] = useState<Transaction[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [fileAdded, setFileAdded] = useState<File | null>(null);
+  const [showRemove, setShowRemove] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [totalIncome, setTotalIncome] = useState(0)
   const [totalExpense, setTotalExpense] = useState(0)
@@ -33,6 +34,7 @@ const ExpenseChart = () => {
     const file = event.target.files?.[0];
     if (!file) return;
     setFileAdded(file);
+    setShowRemove(true);
   }
 
   useEffect(() => {
@@ -212,11 +214,12 @@ const ExpenseChart = () => {
             Manage
           </button>
 
-          {fileAdded && <button
+          {showRemove && <button
             onClick={() => {
               setFileAdded(null);
               setRawTransactions([]);
               setExpenses([]);
+              setShowRemove(false);
             }}
             className="px-6 py-2.5 text-sm text-white bg-red-500/30 hover:bg-red-500/20 
               focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-xl transition-all
@@ -405,7 +408,7 @@ const ExpenseChart = () => {
             </div>
           )}
       </div>
-      {showModal && <EditorModal currentExpenses={rawTransactions} onClose={() => setShowModal(false)} onViewSaved={(txns) => setRawTransactions(txns)} />}
+      {showModal && <EditorModal currentExpenses={rawTransactions} onClose={() => setShowModal(false)} onViewSaved={(txns) => { setRawTransactions(txns); setShowRemove(true) }} />}
     </section>
   )
 }
