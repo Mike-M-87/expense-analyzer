@@ -40,7 +40,7 @@ export function CsvReader(file: File, onFinish: (transactions: Transaction[]) =>
     });
 
     // Ensure required fields exist (date, name, amount, type)
-    const requiredKeys = ['date', 'name', 'amount', 'type'];
+    const requiredKeys = ['date', 'name', 'amount', 'type', 'currency'];
     for (const key of requiredKeys) {
       if (indexMap[key] === undefined) {
         throw new Error(`CSV missing required field: ${key}`);
@@ -54,6 +54,7 @@ export function CsvReader(file: File, onFinish: (transactions: Transaction[]) =>
       const date = cells[indexMap['date']];
       const amountStr = cells[indexMap['amount']];
       const txnType = cells[indexMap['type']];
+      const currency = cells[indexMap['currency']];
 
       // If destinationName exists and isn't empty, use it; otherwise, use name.
       const destinationName = indexMap['destinationName'] !== undefined ? cells[indexMap['destinationName']] : '';
@@ -61,7 +62,7 @@ export function CsvReader(file: File, onFinish: (transactions: Transaction[]) =>
       const name = destinationName || nameFromCSV;
 
       // Validate required fields.
-      if (!date || !name || !amountStr || !txnType) {
+      if (!date || !name || !amountStr || !txnType || !currency) {
         throw new Error('Missing required fields');
       }
       if (isNaN(Date.parse(date))) {
@@ -70,6 +71,17 @@ export function CsvReader(file: File, onFinish: (transactions: Transaction[]) =>
       if (txnType !== 'expense' && txnType !== 'income') {
         throw new Error('Type must be either "expense" or "income"');
       }
+      if (currency !== "USD" && currency !== "KES") {
+        throw new Error('Currency must be either "USD" or "KES"');
+      }
+
+      const parsedAmount = parseFloat(amountStr);
+      if (isNaN(parsedAmount)) {
+        throw new Error('Invalid amount format');
+      }
+
+      const kesAmount = currency === "USD" ? parsedAmount * 127 : parsedAmount;
+      const parsedKesAmount = Math.ceil(kesAmount);
 
       // Construct the Transaction.
       const transaction: Transaction = {
@@ -77,7 +89,7 @@ export function CsvReader(file: File, onFinish: (transactions: Transaction[]) =>
         icon: indexMap['icon'] !== undefined ? cells[indexMap['icon']] : '',
         name,
         note: indexMap['note'] !== undefined ? cells[indexMap['note']] : '',
-        amount: parseFloat(amountStr) || 0,
+        amount: parsedKesAmount || 0,
         currency: indexMap['currency'] !== undefined ? cells[indexMap['currency']] : '',
         type: txnType as 'expense' | 'income',
         recurring: indexMap['recurring'] !== undefined ? cells[indexMap['recurring']] : ''
